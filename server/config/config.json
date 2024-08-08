@@ -1,0 +1,10 @@
+{
+    "development": {
+      "username": "root",
+      "password": "password",
+      "database": "sequelize_crud",
+      "host": "localhost",
+      "dialect": "mysql"
+    }
+  }
+  
