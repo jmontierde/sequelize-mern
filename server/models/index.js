@@ -9,15 +9,18 @@ const Todo = sequelize.define('Todo', {
   }, 
   title: { 
     type: DataTypes.STRING,
+    allowNull: false, 
   }, 
   description: { 
-    type: DataTypes.STRING
+    type: DataTypes.STRING,
+    allowNull: false, 
   },
   status: { 
-    type: DataTypes.BOOLEAN
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   },
   createdAt: { 
-    type: DataTypes.DATE
+    type: DataTypes.DATE,
   }
 }, { 
   freezeTableName: true
