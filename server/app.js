@@ -4,22 +4,19 @@ import { dbConnection, sequelize } from './config/dbConnect.js';
 import Todo from './models/index.js';
 import bodyParser from 'body-parser';
 import todoRoutes from './routes/todoRoutes.js'
+import cors from 'cors'
 
 const app = express();
 dotenv.config({path: './config/config.env'});
 
 
 
+app.use(cors({
+    origin: 'http://localhost:5173', 
+}));
 
 
-// app.post('/api/todos', async(req, res) => { 
-//     try {
-//         const todo = await Todo.create(req.body);
-//         res.json(todo)
-//     } catch (error) {
-//         res.json(error)
-//     }
-// })
+
 
 app.use(bodyParser.json());
 app.use(express.json());
