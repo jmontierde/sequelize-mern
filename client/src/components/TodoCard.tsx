@@ -3,18 +3,17 @@ import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { Todo } from "../types";
 import { Box, Button, TextField } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateStatusTodo, updateTodo } from "../api/todos"; // Import the updateTodo function
+import { updateStatusTodo, updateTodo } from "../api/todos";
 
 interface TodoCardProps {
   todos: Todo[];
-  handleConfirmDelete: (id: number) => void;
+  handleOpenConfirm: (id: number) => void;
 }
 
-const TodoCard: React.FC<TodoCardProps> = ({ todos, handleConfirmDelete }) => {
+const TodoCard: React.FC<TodoCardProps> = ({ todos, handleOpenConfirm }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedTitle, setEditedTitle] = useState<string>("");
   const [editedDescription, setEditedDescription] = useState<string>("");
-
   const queryClient = useQueryClient();
 
   const updateMutation = useMutation({
@@ -142,7 +141,7 @@ const TodoCard: React.FC<TodoCardProps> = ({ todos, handleConfirmDelete }) => {
               <Button
                 variant="contained"
                 color="secondary"
-                onClick={() => handleConfirmDelete(row.original.id)}
+                onClick={() => handleOpenConfirm(row.original.id)}
               >
                 Delete
               </Button>

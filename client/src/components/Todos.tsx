@@ -1,6 +1,16 @@
 import React, { useState } from "react";
 import TodoCard from "./TodoCard";
-import { Box, Button, Modal, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Modal,
+  TextField,
+  Typography,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteTodo, fetchTodos, postTodo } from "../api/todos";
 import { useTodoStore } from "../stores/useTodoStore";
@@ -22,6 +32,9 @@ const Todos = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [todoToDelete, setTodoToDelete] = useState<number | null>(null);
+
   const createTodo = useTodoStore((state) => state.createTodo);
   const queryClient = useQueryClient();
 
@@ -30,8 +43,6 @@ const Todos = () => {
     queryFn: fetchTodos,
     staleTime: 30000,
   });
-
-  console.log("todos", todos);
 
   const mutation = useMutation({
     mutationFn: () => postTodo(title, description),
@@ -48,12 +59,25 @@ const Todos = () => {
     },
   });
 
-  const handleConfirmDelete = (id: number) => {
-    deleteMutation.mutate(id);
-  };
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const handleOpenConfirm = (id: number) => {
+    setTodoToDelete(id);
+    setConfirmOpen(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setConfirmOpen(false);
+    setTodoToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (todoToDelete !== null) {
+      deleteMutation.mutate(todoToDelete);
+    }
+    handleCloseConfirm();
+  };
 
   return (
     <Box>
@@ -104,7 +128,27 @@ const Todos = () => {
           </Box>
         </Box>
       </Modal>
-      <TodoCard todos={todos || []} handleConfirmDelete={handleConfirmDelete} />
+
+      <TodoCard todos={todos || []} handleOpenConfirm={handleOpenConfirm} />
+
+      <Dialog
+        open={confirmOpen}
+        onClose={handleCloseConfirm}
+        aria-labelledby="confirm-dialog-title"
+      >
+        <DialogTitle id="confirm-dialog-title">Confirm Delete</DialogTitle>
+        <DialogContent>
+          Are you sure you want to delete this todo item?
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseConfirm} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="secondary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
